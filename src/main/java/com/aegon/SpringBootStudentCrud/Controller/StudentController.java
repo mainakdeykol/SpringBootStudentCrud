@@ -1,6 +1,7 @@
 package com.aegon.SpringBootStudentCrud.Controller;
 
 
+import com.aegon.SpringBootStudentCrud.DTO.StudentDTO;
 import com.aegon.SpringBootStudentCrud.Entities.Student;
 import com.aegon.SpringBootStudentCrud.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,15 @@ public class StudentController {
     }
 
     @GetMapping("/fetch/student")
-    public ResponseEntity<List<Student>> fetchAllStudent(){
-        List<Student> students= studentService.fetchAllStudent();
+    public ResponseEntity<List<StudentDTO>> fetchAllStudent(){
+        List<StudentDTO> students= studentService.fetchAllStudent();
         if(students.size()==0) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         return ResponseEntity.of(Optional.of(students));
     }
 
     @GetMapping("/fetch/student/{rollNo}")
-    public ResponseEntity<Student> fetchStudent(@PathVariable int rollNo){
-        Student student = studentService.fetchStudent(rollNo);
+    public ResponseEntity<StudentDTO> fetchStudent(@PathVariable int rollNo){
+        StudentDTO student = studentService.fetchStudent(rollNo);
         if(student==null) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         return ResponseEntity.of(Optional.of(student));
     }
@@ -58,32 +59,22 @@ public class StudentController {
     }
 
     @GetMapping("/fullname/{fullName}")
-    public ResponseEntity<Student> findByFullName(@PathVariable String fullName){
+    public ResponseEntity<StudentDTO> findByFullName(@PathVariable String fullName){
         String[] str=fullName.split(" ");
-        if(str.length==1) return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        if(str.length<=1) return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
         //System.out.println("Testing......");
-        Student student=studentService.findByFullName(str[0],str[1]);
+        StudentDTO student=studentService.findByFullName(str[0],str[1]);
         if(student==null) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         return ResponseEntity.of(Optional.of(student));
     }
 
     @GetMapping("/firstnameandroll/{fNameAndRoll}")
-    public ResponseEntity<Student>  findByFirstNameAndRollNo(@PathVariable String fNameAndRoll){
+    public ResponseEntity<StudentDTO>  findByFirstNameAndRollNo(@PathVariable String fNameAndRoll){
         String[] str=fNameAndRoll.split(" ");
-        if(str.length==1) return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-        Student student=studentService.findByFirstNameAndRollNo(str[0],Integer.parseInt(str[1]));
+        if(str.length<=1) return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        StudentDTO student=studentService.findByFirstNameAndRollNo(str[0],Integer.parseInt(str[1]));
         if(student==null) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         //System.out.println("Testing......");
         return ResponseEntity.of(Optional.of(student));
     }
-
-    //    @GetMapping("/firstname/{firstName}")
-//    public String getStudentByFirstName(@PathVariable String firstName){
-//        return studentService.getStudentByFirstName(firstName) ;
-//    }
-//
-//    @GetMapping("/lastname/{lastName}")
-//    public String getStudentByLastName(@PathVariable String lastName){
-//        return studentService.getStudentByLastName(lastName) ;
-//    }
 }
