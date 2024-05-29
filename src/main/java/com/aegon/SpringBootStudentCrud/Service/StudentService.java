@@ -27,10 +27,10 @@ public class StudentService {
     }
 
 
-    public Student addStudent(Student student){
-        Student save = studentRepo.save(student);
+    public StudentDTO addStudent(Student student){
+        StudentDTO studentDTO = convertEntityToDto(studentRepo.save(student));
         //System.out.println(save);
-        return save;
+        return studentDTO;
     }
 
     public List<StudentDTO> fetchAllStudent(){
