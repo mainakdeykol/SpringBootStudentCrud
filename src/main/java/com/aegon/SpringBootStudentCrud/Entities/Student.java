@@ -13,8 +13,8 @@ import java.util.List;
 @Setter
 @Table(name = "Student")
 public class Student {
-    @Id
-    private int rollNo;
+    @EmbeddedId
+    private StudentIdentity id;
     @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
@@ -23,7 +23,7 @@ public class Student {
     private String dob;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "rollNo")
+    @MapsId("id")
     private List<StudentMarks> studentMarks;
 
 }

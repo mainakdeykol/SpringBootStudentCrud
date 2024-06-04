@@ -1,6 +1,7 @@
 package com.aegon.SpringBootStudentCrud.ServiceImp;
 
 import com.aegon.SpringBootStudentCrud.Entities.Student;
+import com.aegon.SpringBootStudentCrud.Entities.StudentIdentity;
 import com.aegon.SpringBootStudentCrud.Repoitory.StudentRepo;
 import com.aegon.SpringBootStudentCrud.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,27 @@ public class ServiceImp implements StudentService {
     }
 
     @Override
-    public Student fetchStudent(int rollNo) {
-        Optional<Student> student = studentRepo.findById(rollNo);
+    public Student fetchStudentById(int regId,int rollNo) {
+        Optional<Student> student = studentRepo.findById(new StudentIdentity(regId,rollNo));
         if(student.isEmpty()) return null;
         return student.get();
     }
 
     @Override
+    public Student fetchStudentByRollNo(int rollNo) {
+        Optional<Student> student = studentRepo.findByRollNo(rollNo);
+        if(student.isEmpty()) return null;
+        return student.get();
+    }
+
+    @Override
+    public void deleteStudentById(int regId,int rollNo) {
+        studentRepo.deleteById(new StudentIdentity(regId,rollNo));
+    }
+
+    @Override
     public void deleteStudentByRollNo(int rollNo) {
-        studentRepo.deleteById(rollNo);
+        studentRepo.deleteByRollNo(rollNo);
     }
 
     @Override

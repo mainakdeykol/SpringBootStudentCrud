@@ -30,6 +30,7 @@ public class StudentController {
             return repFunction.created();
         }
         else {
+            System.out.println(string);
             return repFunction.serverError();
         }
     }
@@ -43,13 +44,29 @@ public class StudentController {
         return ResponseEntity.of(Optional.of(students));
     }
 
-    @GetMapping("/fetch/student/{rollNo}")
-    public ResponseEntity<StudentDTO> fetchStudent(@PathVariable int rollNo){
-        Student student = serviceImp.fetchStudent(rollNo);
+    @GetMapping("/fetch/student/{regNo}-{rollNo}")
+    public ResponseEntity<StudentDTO> fetchStudent(@PathVariable int regNo,@PathVariable int rollNo){
+        Student student = serviceImp.fetchStudentById(regNo,rollNo);
         if(student==null) return repFunction.noContent();
         else {
             return ResponseEntity.of(Optional.of(repFunction.convertEntityToDto(student)));
         }
+    }
+
+    @GetMapping("/fetch/student/{rollNo}")
+    public ResponseEntity<StudentDTO> fetchStudentByRoll(@PathVariable int rollNo){
+        Student student = serviceImp.fetchStudentByRollNo(rollNo);
+        if(student==null) return repFunction.noContent();
+        else {
+            return ResponseEntity.of(Optional.of(repFunction.convertEntityToDto(student)));
+        }
+    }
+
+
+    @DeleteMapping("/delete/{regNo}-{rollNo}")
+    public ResponseEntity<String> deleteStudentById(@PathVariable int regNo, @PathVariable int rollNo){
+        serviceImp.deleteStudentById(regNo,rollNo);
+        return repFunction.success();
     }
 
     @DeleteMapping("/delete/{rollNo}")
