@@ -1,8 +1,8 @@
 package com.aegon.SpringBootStudentCrud.Controller;
 
 
-import com.aegon.SpringBootStudentCrud.DTO.StudentDTO;
-import com.aegon.SpringBootStudentCrud.Entities.Student;
+import com.aegon.SpringBootStudentCrud.DTO.StudentRequest;
+import com.aegon.SpringBootStudentCrud.DTO.StudentResponse;
 import com.aegon.SpringBootStudentCrud.RepFunction.RepFunction;
 import com.aegon.SpringBootStudentCrud.ServiceImp.ServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class StudentController {
@@ -24,41 +23,38 @@ public class StudentController {
     RepFunction repFunction;
 
     @PostMapping("/add/student")
-    public ResponseEntity<String> addStudent(@RequestBody Student student){
-        String string=serviceImp.addStudent(student);
+    public ResponseEntity<String> addStudent(@RequestBody StudentRequest studentRequest){
+        String string=serviceImp.addStudent(studentRequest);
         if(string.equalsIgnoreCase("Success")) {
             return repFunction.created();
         }
         else {
-            System.out.println(string);
             return repFunction.serverError();
         }
     }
 
     @GetMapping("/fetch/student")
-    public ResponseEntity<List<StudentDTO>> fetchAllStudent(){
-        List<StudentDTO> students= serviceImp.fetchAllStudent().stream()
-                .map(student -> repFunction.convertEntityToDto(student))
-                .collect(Collectors.toList());
-        if(students.size()==0) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        return ResponseEntity.of(Optional.of(students));
+    public ResponseEntity<List<StudentResponse>> fetchAllStudent(){
+        List<StudentResponse> studentResponses= serviceImp.fetchAllStudent();
+        if(studentResponses.size()==0) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.of(Optional.of(studentResponses));
     }
 
     @GetMapping("/fetch/student/{regNo}-{rollNo}")
-    public ResponseEntity<StudentDTO> fetchStudent(@PathVariable int regNo,@PathVariable int rollNo){
-        Student student = serviceImp.fetchStudentById(regNo,rollNo);
-        if(student==null) return repFunction.noContent();
+    public ResponseEntity<StudentResponse> fetchStudent(@PathVariable int regNo,@PathVariable int rollNo){
+        StudentResponse studentResponse = serviceImp.fetchStudentById(regNo,rollNo);
+        if(studentResponse==null) return repFunction.noContent();
         else {
-            return ResponseEntity.of(Optional.of(repFunction.convertEntityToDto(student)));
+            return ResponseEntity.of(Optional.of(studentResponse));
         }
     }
 
     @GetMapping("/fetch/student/{rollNo}")
-    public ResponseEntity<StudentDTO> fetchStudentByRoll(@PathVariable int rollNo){
-        Student student = serviceImp.fetchStudentByRollNo(rollNo);
-        if(student==null) return repFunction.noContent();
+    public ResponseEntity<StudentResponse> fetchStudentByRoll(@PathVariable int rollNo){
+        StudentResponse studentResponse = serviceImp.fetchStudentByRollNo(rollNo);
+        if(studentResponse==null) return repFunction.noContent();
         else {
-            return ResponseEntity.of(Optional.of(repFunction.convertEntityToDto(student)));
+            return ResponseEntity.of(Optional.of(studentResponse));
         }
     }
 
@@ -82,20 +78,20 @@ public class StudentController {
     }
 
     @GetMapping("/fullname/{fullName}")
-    public ResponseEntity<StudentDTO> findByFullName(@PathVariable String fullName){
+    public ResponseEntity<StudentResponse> findByFullName(@PathVariable String fullName){
         String[] str=fullName.split(" ");
         if(str.length<=1) return repFunction.notAcceptable();
-        Student student=serviceImp.findByFullName(str[0],str[1]);
-        if(student==null) return repFunction.noContent();
-        return ResponseEntity.of(Optional.of(repFunction.convertEntityToDto(student)));
+        StudentResponse studentResponse=serviceImp.findByFullName(str[0],str[1]);
+        if(studentResponse==null) return repFunction.noContent();
+        return ResponseEntity.of(Optional.of(studentResponse));
     }
 
     @GetMapping("/firstnameandroll/{fNameAndRoll}")
-    public ResponseEntity<StudentDTO>  findByFirstNameAndRollNo(@PathVariable String fNameAndRoll){
+    public ResponseEntity<StudentResponse>  findByFirstNameAndRollNo(@PathVariable String fNameAndRoll){
         String[] str=fNameAndRoll.split(" ");
         if(str.length<=1) return repFunction.notAcceptable();
-        Student student=serviceImp.findByFirstNameAndRollNo(str[0],Integer.parseInt(str[1]));
-        if(student==null) return repFunction.noContent();
-        return ResponseEntity.of(Optional.of(repFunction.convertEntityToDto(student)));
+        StudentResponse studentResponse=serviceImp.findByFirstNameAndRollNo(str[0],Integer.parseInt(str[1]));
+        if(studentResponse==null) return repFunction.noContent();
+        return ResponseEntity.of(Optional.of(studentResponse));
     }
 }
