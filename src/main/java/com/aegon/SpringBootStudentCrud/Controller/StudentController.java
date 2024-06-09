@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,5 +95,11 @@ public class StudentController {
         StudentResponse studentResponse=serviceImp.findByFirstNameAndRollNo(str[0],Integer.parseInt(str[1]));
         if(studentResponse==null) return repFunction.noContent();
         return ResponseEntity.of(Optional.of(studentResponse));
+    }
+    @PutMapping("/update/{firstName}/{lastName}/{dob}")
+    public void updateStudent(@PathVariable String firstName,@PathVariable String lastName,@PathVariable String dob) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException {
+        Method method = StudentController.class.getMethod("updateStudent", String.class, String.class,String.class);
+        Parameter[] parameters = method.getParameters();
+        serviceImp.updateStudent(firstName,lastName,dob,parameters);
     }
 }

@@ -6,19 +6,26 @@ import com.aegon.SpringBootStudentCrud.DTO.StudentResponse;
 import com.aegon.SpringBootStudentCrud.Entities.Student;
 import com.aegon.SpringBootStudentCrud.Entities.StudentIdentity;
 import com.aegon.SpringBootStudentCrud.RepFunction.RepFunction;
+import com.aegon.SpringBootStudentCrud.Repoitory.CustomRepoImp;
 import com.aegon.SpringBootStudentCrud.Repoitory.StudentRepo;
 import com.aegon.SpringBootStudentCrud.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 import java.util.List;
+import java.util.*;
 import java.util.Optional;
 
 @Service
 public class ServiceImp implements StudentService {
 
     @Autowired
-    public StudentRepo studentRepo;
+    StudentRepo studentRepo;
+
+    @Autowired
+    CustomRepoImp customRepoImp;
 
     @Autowired
     RepFunction repFunction;
@@ -82,5 +89,16 @@ public class ServiceImp implements StudentService {
     public StudentResponse findByFirstNameAndRollNo(String firstName, int rollNo) {
         Student student=  studentRepo.findByFirstNameAndRollNo(firstName,rollNo);
         return repFunction.convertEntityToDto(student);
+    }
+
+    @Override
+    public void updateStudent(Object... fields) throws NoSuchFieldException, IllegalAccessException {
+        Map<String, Object> map = new HashMap<>();
+        Parameter[] parameters= (Parameter[]) fields[fields.length-1];
+        System.out.println(parameters.length);
+        for (int i = 0; i < fields.length-1; i++) {
+            map.put(parameters[i].getName(),fields[i]);
+        }
+        customRepoImp.updateStudent(map);
     }
 }

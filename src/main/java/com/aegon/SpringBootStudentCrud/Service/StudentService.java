@@ -3,6 +3,7 @@ package com.aegon.SpringBootStudentCrud.Service;
 import com.aegon.SpringBootStudentCrud.DTO.StudentRequest;
 import com.aegon.SpringBootStudentCrud.DTO.StudentResponse;
 
+import java.lang.reflect.Parameter;
 import java.util.List;
 
 public interface StudentService {
@@ -15,4 +16,5 @@ public interface StudentService {
     void deleteStudentAll();
     StudentResponse findByFullName(String firstName, String lastName);
     StudentResponse findByFirstNameAndRollNo(String firstName, int rollNo);
+    void updateStudent(Object... fields ) throws NoSuchFieldException,IllegalAccessException;
 }
